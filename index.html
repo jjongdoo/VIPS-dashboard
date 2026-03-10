@@ -247,8 +247,8 @@ async function loadData() {
     const res = await fetch(SHEET_CSV_URL);
     const text = await res.text();
     const rows = text.trim().split("\n").map(r => r.split(","));
-    // CSV 구조: 날짜, 총평가, 원금, 종목1명, 종목1금, ...종목5명, 종목5금, 현금
-    const data = rows.slice(1).filter(r => r[0]);
+    // 1행=배너, 2행=헤더 → 2개 건너뜀. 날짜 있고 숫자가 있는 행만 필터
+    const data = rows.slice(2).filter(r => r[0] && r[0].trim().match(/\d{4}/));
     return data;
   } catch(e) {
     console.warn("CSV 로드 실패, 샘플 사용", e);
@@ -256,18 +256,24 @@ async function loadData() {
   }
 }
 
+function cleanNum(str) {
+  // CSV에서 따옴표, 쉼표, 공백 제거 후 숫자 변환
+  return +(String(str || "0").replace(/["\s,]/g, ""));
+}
+
 function parseCSV(rows) {
-  const dates    = rows.map(r => r[0].trim());
-  const vipsVals = rows.map(r => +r[1]);
-  const origins  = rows.map(r => +r[2]);
+  const dates    = rows.map(r => r[0].trim().replace(/"/g, ""));
+  const vipsVals = rows.map(r => cleanNum(r[1]));
+  const origins  = rows.map(r => cleanNum(r[2]));
   const holdings = {};
   const lastRow  = rows[rows.length - 1];
   for (let i = 3; i <= 12; i += 2) {
-    const name = lastRow[i]?.trim();
-    const val  = +lastRow[i+1];
-    if (name) holdings[name] = val;
+    const name = (lastRow[i] || "").replace(/"/g, "").trim();
+    const val  = cleanNum(lastRow[i+1]);
+    if (name && val > 0) holdings[name] = val;
   }
-  holdings["현금"] = +lastRow[13] || 0;
+  const cash = cleanNum(lastRow[13]);
+  if (cash > 0) holdings["현금"] = cash;
   return { dates, vipsVals, origins, holdings, kospiIdx: null };
 }
 
