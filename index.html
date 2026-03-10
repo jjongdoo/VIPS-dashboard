@@ -281,9 +281,11 @@ async function loadData() {
 }
 
 function parseCSV(rows) {
-  const dates    = rows.map(r => (r[0] || "").replace(/"/g, "").trim());
-  const vipsVals = rows.map(r => cleanNum(r[1]));
-  const origins  = rows.map(r => cleanNum(r[2]));
+  const dates       = rows.map(r => (r[0] || "").replace(/"/g, "").trim());
+  const vipsVals    = rows.map(r => cleanNum(r[1]));
+  const origins     = rows.map(r => cleanNum(r[2]));
+  // O열(index 14) = KOSPI 종가
+  const kospiCloses = rows.map(r => cleanNum(r[14]) || null);
   const holdings = {};
   const lastRow  = rows[rows.length - 1];
   for (let i = 3; i <= 12; i += 2) {
@@ -293,66 +295,16 @@ function parseCSV(rows) {
   }
   const cash = cleanNum(lastRow[13]);
   if (cash > 0) holdings["현금"] = cash;
-  return { dates, vipsVals, origins, holdings };
+  // KOSPI 종가 → 기준일=100 인덱스로 변환
+  const kospiIdx = calcKospiIndex(kospiCloses.filter(v => v));
+  return { dates, vipsVals, origins, holdings, kospiIdx };
 }
 
-// Yahoo Finance에서 KOSPI(^KS11) 역사 데이터 가져오기
-async function fetchKospiIndex(dates) {
-  try {
-    const startDate = new Date(dates[0]);
-    const endDate   = new Date(dates[dates.length - 1]);
-    // 하루 여유 추가
-    const p1 = Math.floor(startDate.getTime() / 1000) - 86400;
-    const p2 = Math.floor(endDate.getTime()   / 1000) + 86400;
-
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/%5EKS11?interval=1d&period1=${p1}&period2=${p2}`;
-    const res = await fetch(url);
-    const json = await res.json();
-
-    const timestamps = json.result[0].timestamp;
-    const closes     = json.result[0].indicators.quote[0].close;
-
-    // timestamp → yyyy-mm-dd 맵 생성
-    const kospiMap = {};
-    timestamps.forEach((ts, i) => {
-      if (closes[i] == null) return;
-      const d = new Date(ts * 1000);
-      // KST 기준 날짜
-      const kst = new Date(d.getTime() + 9 * 3600 * 1000);
-      const key = kst.toISOString().slice(0, 10);
-      kospiMap[key] = closes[i];
-    });
-
-    // 기준일 종가
-    const baseClose = findClosest(kospiMap, dates[0]);
-    if (!baseClose) return null;
-
-    // 각 날짜에 대해 인덱스 계산 (없으면 가장 가까운 날짜 사용)
-    const kospiIdx = dates.map(d => {
-      const close = findClosest(kospiMap, d);
-      return close ? +(close / baseClose * 100).toFixed(2) : null;
-    });
-
-    console.log("KOSPI 로드 성공:", kospiIdx);
-    return kospiIdx;
-  } catch(e) {
-    console.warn("KOSPI 로드 실패:", e);
-    return null;
-  }
-}
-
-// 날짜 맵에서 가장 가까운 날짜 값 반환 (±7일 이내)
-function findClosest(map, dateStr) {
-  if (map[dateStr]) return map[dateStr];
-  const target = new Date(dateStr).getTime();
-  let best = null, bestDiff = Infinity;
-  for (const [k, v] of Object.entries(map)) {
-    const diff = Math.abs(new Date(k).getTime() - target);
-    if (diff < bestDiff && diff < 7 * 86400 * 1000) {
-      bestDiff = diff; best = v;
-    }
-  }
-  return best;
+// KOSPI 인덱스 계산 (CSV O열의 종가 → 기준일=100 인덱스)
+function calcKospiIndex(kospiCloses) {
+  const base = kospiCloses[0];
+  if (!base) return null;
+  return kospiCloses.map(v => v ? +(v / base * 100).toFixed(2) : null);
 }
 
 function calcVipsIndex(vipsVals) {
@@ -558,8 +510,8 @@ async function init() {
   const { dates, vipsVals, origins, holdings } = data;
   const vipsIdx = calcVipsIndex(vipsVals);
 
-  // KOSPI는 Yahoo Finance에서 직접 가져옴
-  const kospiIdx = await fetchKospiIndex(dates);
+  // kospiIdx는 parseCSV에서 이미 계산됨 (구글 시트 O열 KOSPI 종가 기반)
+  const kospiIdx = data.kospiIdx || null;
 
   setKPI({ dates, vipsVals, origins, kospiIdx });
   drawLine(dates, vipsIdx, kospiIdx);
