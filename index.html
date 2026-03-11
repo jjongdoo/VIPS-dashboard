@@ -8,518 +8,258 @@
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #0f1117;
-      --surface: #181c27;
-      --surface2: #1f2436;
-      --border: #2a2f42;
-      --accent: #4f8ef7;
-      --red: #f25c54;
-      --green: #3dd68c;
-      --yellow: #f4c542;
-      --text: #e8eaf0;
-      --muted: #7a8099;
+      --bg: #0f1117; --surface: #181c27; --surface2: #1f2436; --border: #2a2f42;
+      --accent: #4f8ef7; --red: #f25c54; --green: #3dd68c; --yellow: #f4c542;
+      --purple: #a78bfa; --text: #e8eaf0; --muted: #7a8099;
       --font: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
     }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      min-height: 100vh;
-      padding: 28px 24px 40px;
-    }
-
-    /* ── 헤더 ── */
-    .header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .header-left h1 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-    .header-left span {
-      font-size: 12px;
-      color: var(--muted);
-      display: block;
-      margin-top: 3px;
-    }
-    .update-badge {
-      font-size: 11px;
-      color: var(--muted);
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 12px;
-    }
-
-    /* ── KPI 카드 ── */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    @media (max-width: 700px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-
-    .kpi-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 18px;
-    }
-    .kpi-label {
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin-bottom: 8px;
-    }
-    .kpi-value {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-    .kpi-value.up   { color: var(--green); }
-    .kpi-value.down { color: var(--red);   }
-    .kpi-sub {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    /* ── 차트 그리드 ── */
-    .chart-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .chart-grid-bottom {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    @media (max-width: 800px) {
-      .chart-grid, .chart-grid-bottom { grid-template-columns: 1fr; }
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-    }
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .card-sub {
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); padding: 24px 20px 40px; }
+    .header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 8px; }
+    .header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+    .header span { font-size: 12px; color: var(--muted); display: block; margin-top: 3px; }
+    .badge { font-size: 11px; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 16px; }
+    @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 500px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; position: relative; overflow: hidden; }
+    .kpi-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); }
+    .kpi-card.red::before { background: var(--red); }
+    .kpi-card.green::before { background: var(--green); }
+    .kpi-card.yellow::before { background: var(--yellow); }
+    .kpi-card.purple::before { background: var(--purple); }
+    .kpi-card.muted::before { background: var(--muted); }
+    .kpi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+    .kpi-value { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+    .kpi-value.up { color: var(--green); } .kpi-value.down { color: var(--red); } .kpi-value.neutral { color: var(--text); }
+    .kpi-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
+    .row { display: grid; gap: 14px; margin-bottom: 14px; }
+    .row-2-1 { grid-template-columns: 2fr 1fr; }
+    .row-2 { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 900px) { .row-2-1, .row-2 { grid-template-columns: 1fr; } }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+    .card-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+    .card-sub { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
     canvas { width: 100% !important; }
-
-    /* ── 안내 배너 ── */
-    .guide-banner {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 10px;
-      padding: 14px 18px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.8;
-      margin-top: 16px;
-    }
-    .guide-banner strong { color: var(--text); }
+    .mdd-bar-wrap { margin-top: 10px; }
+    .mdd-bar-bg { background: var(--surface2); border-radius: 6px; height: 10px; width: 100%; overflow: hidden; margin: 6px 0 4px; }
+    .mdd-bar-fill { height: 100%; background: linear-gradient(90deg, var(--red), #ff8a80); border-radius: 6px; transition: width 1s ease; }
+    .mdd-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); }
+    .sharpe-gauge { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+    .sharpe-circle { width: 72px; height: 72px; border-radius: 50%; border: 4px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+    .sharpe-circle.good { border-color: var(--green); color: var(--green); }
+    .sharpe-circle.ok { border-color: var(--yellow); color: var(--yellow); }
+    .sharpe-circle.poor { border-color: var(--red); color: var(--red); }
+    .sharpe-desc { font-size: 11px; color: var(--muted); line-height: 1.7; }
+    .sharpe-desc strong { color: var(--text); font-size: 12px; }
   </style>
 </head>
 <body>
-
 <div class="header">
-  <div class="header-left">
-    <h1>📊 VIPS 포트폴리오 대시보드</h1>
-    <span>기준일 대비 누적 성과 · KOSPI 벤치마크 비교</span>
-  </div>
-  <div class="update-badge" id="lastUpdate">—</div>
+  <div><h1>📊 VIPS 포트폴리오 대시보드</h1><span>기준일 대비 누적 성과 · KOSPI 벤치마크 비교</span></div>
+  <div class="badge" id="lastUpdate">—</div>
 </div>
-
-<!-- KPI -->
 <div class="kpi-grid">
-  <div class="kpi-card">
-    <div class="kpi-label">현재 총자산</div>
-    <div class="kpi-value" id="kpi-total">—</div>
-    <div class="kpi-sub">운용 중인 총 평가금액</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">누적 수익금</div>
-    <div class="kpi-value" id="kpi-profit">—</div>
-    <div class="kpi-sub">총평가 − 투자원금</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">VIPS 수익률</div>
-    <div class="kpi-value" id="kpi-vips-ret">—</div>
-    <div class="kpi-sub">기준일 대비</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">KOSPI 대비 초과</div>
-    <div class="kpi-value" id="kpi-excess">—</div>
-    <div class="kpi-sub">알파</div>
-  </div>
+  <div class="kpi-card green"><div class="kpi-label">현재 총자산</div><div class="kpi-value neutral" id="kpi-total">—</div><div class="kpi-sub">운용 중인 총 평가금액</div></div>
+  <div class="kpi-card" id="card-profit"><div class="kpi-label">누적 수익금</div><div class="kpi-value" id="kpi-profit">—</div><div class="kpi-sub">총평가 − 투자원금</div></div>
+  <div class="kpi-card" id="card-vips"><div class="kpi-label">VIPS 수익률</div><div class="kpi-value" id="kpi-vips-ret">—</div><div class="kpi-sub">기준일 대비</div></div>
+  <div class="kpi-card muted"><div class="kpi-label">KOSPI 수익률</div><div class="kpi-value neutral" id="kpi-kospi-ret">—</div><div class="kpi-sub">기준일 대비</div></div>
+  <div class="kpi-card" id="card-excess"><div class="kpi-label">초과수익 (α)</div><div class="kpi-value" id="kpi-excess">—</div><div class="kpi-sub">VIPS − KOSPI</div></div>
+  <div class="kpi-card red"><div class="kpi-label">MDD</div><div class="kpi-value down" id="kpi-mdd">—</div><div class="kpi-sub">최대 낙폭</div></div>
 </div>
-
-<!-- 차트 상단 -->
-<div class="chart-grid">
+<div class="row row-2-1">
+  <div class="card"><div class="card-title">누적 성과 비교</div><div class="card-sub">VIPS vs KOSPI · 기준일=100</div><canvas id="lineChart" height="170"></canvas></div>
+  <div class="card"><div class="card-title">종목별 비중</div><div class="card-sub">최신 기준 포트폴리오</div><canvas id="pieChart" height="170"></canvas></div>
+</div>
+<div class="row row-2">
+  <div class="card"><div class="card-title">월별 수익률</div><div class="card-sub">VIPS vs KOSPI (%)</div><canvas id="barChart" height="150"></canvas></div>
+  <div class="card"><div class="card-title">누적 수익금 추이</div><div class="card-sub">원 단위</div><canvas id="areaChart" height="150"></canvas></div>
+</div>
+<div class="row row-2">
   <div class="card">
-    <div class="card-title">누적 성과 비교</div>
-    <div class="card-sub">VIPS vs KOSPI · 기준일=100</div>
-    <canvas id="lineChart" height="180"></canvas>
+    <div class="card-title">MDD (최대 낙폭)</div>
+    <div class="card-sub">Maximum Drawdown — 고점 대비 최대 하락폭</div>
+    <canvas id="mddChart" height="130"></canvas>
+    <div class="mdd-bar-wrap">
+      <div class="mdd-labels"><span>MDD 소진율</span><span id="mdd-pct-label">—</span></div>
+      <div class="mdd-bar-bg"><div class="mdd-bar-fill" id="mdd-bar" style="width:0%"></div></div>
+      <div class="mdd-labels"><span>0%</span><span style="color:var(--red)" id="mdd-peak-label">기준 −30%</span></div>
+    </div>
   </div>
   <div class="card">
-    <div class="card-title">종목별 비중</div>
-    <div class="card-sub">최신 기준 포트폴리오</div>
-    <canvas id="pieChart" height="180"></canvas>
+    <div class="card-title">Sharpe Ratio</div>
+    <div class="card-sub">무위험 수익률 3.5% 기준 (연환산)</div>
+    <canvas id="sharpeChart" height="130"></canvas>
+    <div class="sharpe-gauge">
+      <div class="sharpe-circle" id="sharpe-circle">—</div>
+      <div class="sharpe-desc" id="sharpe-desc"><strong>계산 중...</strong><br>샤프 비율 = (수익률 − 무위험률) / 표준편차<br>1.0↑: 우수 / 0~1: 보통 / 0↓: 주의</div>
+    </div>
   </div>
 </div>
-
-<!-- 차트 하단 -->
-<div class="chart-grid-bottom">
-  <div class="card">
-    <div class="card-title">월별 수익률</div>
-    <div class="card-sub">VIPS vs KOSPI (%)</div>
-    <canvas id="barChart" height="160"></canvas>
-  </div>
-  <div class="card">
-    <div class="card-title">누적 수익금 추이</div>
-    <div class="card-sub">원 단위</div>
-    <canvas id="areaChart" height="160"></canvas>
-  </div>
-</div>
-
-  <div class="guide-banner" id="guide-banner">
-  <strong>⚠️ 구글 시트 공개 게시 필요</strong><br>
-  구글 시트 → <strong>파일 → 공유 → 웹에 게시</strong> → 형식: <strong>CSV</strong> → <strong>📥 데이터입력</strong> 시트 선택 → 게시<br>
-  게시 완료 후 이 페이지를 새로고침하면 실데이터가 로드됩니다.
-</div>
-
 <script>
-// ================================================================
-//  ⬇️  여기만 교체하세요: 구글 시트 공개 CSV URL
-//  구글 시트 → 파일 → 공유 → 웹에 게시 → 형식: CSV → URL 복사
-// ================================================================
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT_IMf5MCNXLrdVv9aC6FJPY4Nm5rVnbna5su3CFhlN8YsejknFgn9ahCMrS5np4MIiHCVTFqlilucK/pub?gid=1326387196&single=true&output=csv";
-// ================================================================
+const SD = { dates:["2025-10-01","2025-11-03","2025-12-01","2026-01-02","2026-02-03","2026-03-10"], vips:[10000000,10206000,10431000,9694000,9994000,9768000], origins:[10000000,10000000,10000000,10000000,10000000,10000000], kospi:[2600,2654,2948,3241,3724,3627], holdings:{"삼성전자":2750000,"SK하이닉스":1950000,"NAVER":1390000,"카카오":870000,"현금":1850000} };
 
-// 샘플 데이터 (SHEET_CSV_URL이 비어있으면 사용)
-const SAMPLE = {
-  dates:    ["2025-10-01","2025-11-03","2025-12-01","2026-01-02","2026-02-03","2026-03-10"],
-  vipsVals: [10000000, 10206000, 10431000, 9694000, 9994000, 9768000],
-  origins:  [10000000, 10000000, 10000000, 10000000, 10000000, 10000000],
-  kospiIdx: [100, 102.10, 113.44, 124.71, 143.23, 139.50],  // 샘플 (실제론 구글 시트에서)
-  holdings: {
-    "삼성전자": 2750000, "SK하이닉스": 1950000,
-    "NAVER": 1390000, "카카오": 870000,
-    "LG에너지솔루션": 958000, "현금": 1850000
-  }
-};
-
-// ── 차트 공통 옵션 ──
-Chart.defaults.color = "#7a8099";
-Chart.defaults.font.family = "'Pretendard','Apple SD Gothic Neo',sans-serif";
-Chart.defaults.font.size = 11;
-
-const gridColor = "rgba(255,255,255,0.05)";
-
-// 따옴표 안의 쉼표를 올바르게 처리하는 CSV 파서
 function parseCSVText(text) {
   const rows = [];
   for (const line of text.trim().split("\n")) {
-    const cells = [];
-    let cur = "", inQ = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
+    const cells = []; let cur = "", inQ = false;
+    for (const ch of line) {
       if (ch === '"') { inQ = !inQ; }
       else if (ch === ',' && !inQ) { cells.push(cur.trim()); cur = ""; }
       else { cur += ch; }
     }
-    cells.push(cur.trim());
-    rows.push(cells);
+    cells.push(cur.trim()); rows.push(cells);
   }
   return rows;
 }
+function cleanNum(s) { return +(String(s||"0").replace(/["\s,]/g,""))||0; }
 
-function cleanNum(str) {
-  return +(String(str || "0").replace(/["\s,]/g, ""));
-}
-
-async function loadData() {
-  if (!SHEET_CSV_URL) return null;
+async function loadCSV() {
   try {
     const res = await fetch(SHEET_CSV_URL);
-    const text = await res.text();
-    const rows = parseCSVText(text);
-    // 1행=배너, 2행=헤더 건너뜀. yyyy-mm-dd 형식 날짜 행만
-    const data = rows.slice(2).filter(r => r[0] && r[0].match(/^\d{4}-\d{2}-\d{2}/));
-    console.log("파싱된 행 수:", data.length);
-    if (data.length > 0) console.log("첫 행 샘플:", data[0]);
-    return data;
-  } catch(e) {
-    console.warn("CSV 로드 실패, 샘플 사용", e);
-    return null;
-  }
+    const rows = parseCSVText(await res.text());
+    return rows.slice(2).filter(r => r[0] && r[0].match(/^\d{4}-\d{2}-\d{2}/));
+  } catch(e) { console.warn("CSV 실패:", e); return null; }
 }
 
-function parseCSV(rows) {
-  const dates       = rows.map(r => (r[0] || "").replace(/"/g, "").trim());
-  const vipsVals    = rows.map(r => cleanNum(r[1]));
-  const origins     = rows.map(r => cleanNum(r[2]));
-  // O열(index 14) = KOSPI 종가
-  const kospiCloses = rows.map(r => cleanNum(r[14]) || null);
+function extractData(rows) {
+  const dates    = rows.map(r => r[0].replace(/"/g,"").trim());
+  const vips     = rows.map(r => cleanNum(r[1]));
+  const origins  = rows.map(r => cleanNum(r[2]));
+  const kospi    = rows.map(r => cleanNum(r[14])||null);
   const holdings = {};
-  const lastRow  = rows[rows.length - 1];
-  for (let i = 3; i <= 12; i += 2) {
-    const name = (lastRow[i] || "").replace(/"/g, "").trim();
-    const val  = cleanNum(lastRow[i+1]);
-    if (name && val > 0) holdings[name] = val;
+  const last = rows[rows.length-1];
+  for (let i=3;i<=12;i+=2) { const n=(last[i]||"").replace(/"/g,"").trim(); const v=cleanNum(last[i+1]); if(n&&v>0) holdings[n]=v; }
+  const cash=cleanNum(last[13]); if(cash>0) holdings["현금"]=cash;
+  return { dates, vips, origins, kospi, holdings };
+}
+
+function toIdx(vals) { const b=vals[0]; return vals.map(v=>v?+(v/b*100).toFixed(2):null); }
+
+function calcMDD(vals) {
+  let peak=vals[0], mdd=0, ti=0, pi=0, tpi=0;
+  for (let i=1;i<vals.length;i++) {
+    if(vals[i]>peak){peak=vals[i];tpi=i;}
+    const dd=(peak-vals[i])/peak*100;
+    if(dd>mdd){mdd=dd;pi=tpi;ti=i;}
   }
-  const cash = cleanNum(lastRow[13]);
-  if (cash > 0) holdings["현금"] = cash;
-  // KOSPI 종가 → 기준일=100 인덱스로 변환
-  const kospiIdx = calcKospiIndex(kospiCloses.filter(v => v));
-  return { dates, vipsVals, origins, holdings, kospiIdx };
+  return { mdd:+mdd.toFixed(2), peakIdx:pi, troughIdx:ti };
 }
 
-// KOSPI 인덱스 계산 (CSV O열의 종가 → 기준일=100 인덱스)
-function calcKospiIndex(kospiCloses) {
-  const base = kospiCloses[0];
-  if (!base) return null;
-  return kospiCloses.map(v => v ? +(v / base * 100).toFixed(2) : null);
-}
-
-function calcVipsIndex(vipsVals) {
-  const base = vipsVals[0];
-  return vipsVals.map(v => +(v / base * 100).toFixed(2));
-}
-
-function calcMonthlyRet(vals) {
-  return vals.map((v, i) => i === 0 ? null : +((v - vals[i-1]) / vals[i-1] * 100).toFixed(2));
+function calcSharpe(vals, rf=0.035) {
+  if(vals.length<2) return null;
+  const rets=[];
+  for(let i=1;i<vals.length;i++) rets.push((vals[i]-vals[i-1])/vals[i-1]);
+  const mean=rets.reduce((a,b)=>a+b,0)/rets.length;
+  const std=Math.sqrt(rets.map(r=>(r-mean)**2).reduce((a,b)=>a+b,0)/rets.length);
+  if(std===0) return null;
+  const ppy=12;
+  return +((mean*ppy-rf)/(std*Math.sqrt(ppy))).toFixed(2);
 }
 
 function fmtKRW(n) {
-  if (Math.abs(n) >= 1e8) return (n/1e8).toFixed(1) + "억원";
-  if (Math.abs(n) >= 1e4) return Math.round(n/1e4) + "만원";
-  return n.toLocaleString() + "원";
+  const a=Math.abs(n), s=n<0?"-":n>0?"+":"";
+  if(a>=1e8) return s+(a/1e8).toFixed(1)+"억원";
+  if(a>=1e4) return s+Math.round(a/1e4)+"만원";
+  return s+a.toLocaleString()+"원";
 }
 
-function setKPI(data) {
-  const { dates, vipsVals, origins, kospiIdx } = data;
-  const last = vipsVals.length - 1;
-  const total  = vipsVals[last];
-  const origin = origins[last];
-  const profit = total - origin;
-  const vipsRet = (vipsVals[last] / vipsVals[0] - 1) * 100;
-  const kospiRet = kospiIdx ? (kospiIdx[last] - 100) : null;
-  const excess = kospiRet !== null ? vipsRet - kospiRet : null;
+Chart.defaults.color="#7a8099";
+Chart.defaults.font.family="'Pretendard','Apple SD Gothic Neo',sans-serif";
+Chart.defaults.font.size=11;
+const G="rgba(255,255,255,0.05)";
 
-  document.getElementById("kpi-total").textContent = fmtKRW(total);
-  const profitEl = document.getElementById("kpi-profit");
-  profitEl.textContent = (profit >= 0 ? "+" : "") + fmtKRW(profit);
-  profitEl.className = "kpi-value " + (profit >= 0 ? "up" : "down");
-
-  const vipsEl = document.getElementById("kpi-vips-ret");
-  vipsEl.textContent = (vipsRet >= 0 ? "+" : "") + vipsRet.toFixed(2) + "%";
-  vipsEl.className = "kpi-value " + (vipsRet >= 0 ? "up" : "down");
-
-  const exEl = document.getElementById("kpi-excess");
-  if (excess !== null) {
-    exEl.textContent = (excess >= 0 ? "+" : "") + excess.toFixed(2) + "%";
-    exEl.className = "kpi-value " + (excess >= 0 ? "up" : "down");
-  } else {
-    exEl.textContent = "KOSPI 로딩 중";
-    exEl.className = "kpi-value";
-  }
-
-  document.getElementById("lastUpdate").textContent =
-    "최근 업데이트: " + dates[last];
+function renderKPI(dates, vips, origins, vipsIdx, kospiIdx) {
+  const l=vips.length-1;
+  const profit=vips[l]-origins[l];
+  const vr=vipsIdx[l]-100;
+  const kr=kospiIdx?kospiIdx[l]-100:null;
+  const ex=kr!==null?+(vr-kr).toFixed(2):null;
+  const {mdd}=calcMDD(vips);
+  document.getElementById("lastUpdate").textContent="최근: "+dates[l];
+  document.getElementById("kpi-total").textContent=fmtKRW(vips[l]).replace("+","");
+  const pe=document.getElementById("kpi-profit"); pe.textContent=fmtKRW(profit); pe.className="kpi-value "+(profit>=0?"up":"down");
+  document.getElementById("card-profit").className="kpi-card "+(profit>=0?"green":"red");
+  const ve=document.getElementById("kpi-vips-ret"); ve.textContent=(vr>=0?"+":"")+vr.toFixed(2)+"%"; ve.className="kpi-value "+(vr>=0?"up":"down");
+  document.getElementById("card-vips").className="kpi-card "+(vr>=0?"green":"red");
+  if(kr!==null) document.getElementById("kpi-kospi-ret").textContent=(kr>=0?"+":"")+kr.toFixed(2)+"%";
+  if(ex!==null){ const ee=document.getElementById("kpi-excess"); ee.textContent=(ex>=0?"+":"")+ex+"%"; ee.className="kpi-value "+(ex>=0?"up":"down"); document.getElementById("card-excess").className="kpi-card "+(ex>=0?"green":"red"); }
+  document.getElementById("kpi-mdd").textContent="-"+mdd+"%";
 }
 
 function drawLine(dates, vipsIdx, kospiIdx) {
-  const hasKospi = kospiIdx && kospiIdx.some(v => v !== null);
-  const datasets = [
-    {
-      label: "VIPS",
-      data: vipsIdx,
-      borderColor: "#4f8ef7",
-      backgroundColor: "rgba(79,142,247,0.08)",
-      borderWidth: 2.5,
-      pointRadius: 3,
-      pointHoverRadius: 6,
-      fill: true,
-      tension: 0.3
-    }
-  ];
-  if (hasKospi) {
-    datasets.push({
-      label: "KOSPI",
-      data: kospiIdx,
-      borderColor: "#f25c54",
-      backgroundColor: "transparent",
-      borderWidth: 2,
-      borderDash: [5,4],
-      pointRadius: 2,
-      tension: 0.3,
-      fill: false
-    });
+  const ds=[{label:"VIPS",data:vipsIdx,borderColor:"#4f8ef7",backgroundColor:"rgba(79,142,247,0.08)",borderWidth:2.5,pointRadius:3,fill:true,tension:0.3}];
+  if(kospiIdx) ds.push({label:"KOSPI",data:kospiIdx,borderColor:"#f25c54",backgroundColor:"transparent",borderWidth:2,borderDash:[5,4],pointRadius:2,tension:0.3});
+  new Chart(document.getElementById("lineChart"),{type:"line",data:{labels:dates,datasets:ds},options:{responsive:true,interaction:{mode:"index",intersect:false},plugins:{legend:{position:"bottom",labels:{usePointStyle:true,padding:14}}},scales:{x:{grid:{color:G},ticks:{maxTicksLimit:6}},y:{grid:{color:G},ticks:{callback:v=>v.toFixed(0)}}}}});
+}
+
+function drawPie(h) {
+  const labels=Object.keys(h), vals=Object.values(h), cols=["#4f8ef7","#3dd68c","#f4c542","#f25c54","#a78bfa","#7a8099","#38bdf8"];
+  new Chart(document.getElementById("pieChart"),{type:"doughnut",data:{labels,datasets:[{data:vals,backgroundColor:cols,borderWidth:2,borderColor:"#181c27",hoverOffset:8}]},options:{responsive:true,cutout:"55%",plugins:{legend:{position:"bottom",labels:{usePointStyle:true,padding:8,font:{size:10}}},tooltip:{callbacks:{label:ctx=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return " "+ctx.label+": "+(ctx.parsed/t*100).toFixed(1)+"%";}}}}}});
+}
+
+function drawBar(dates, vips, kospiRaw) {
+  const vr=vips.map((v,i)=>i===0?null:+((v-vips[i-1])/vips[i-1]*100).toFixed(2));
+  const kr=kospiRaw?kospiRaw.map((v,i)=>i===0||!v||!kospiRaw[i-1]?null:+((v-kospiRaw[i-1])/kospiRaw[i-1]*100).toFixed(2)):null;
+  const ds=[{label:"VIPS",data:vr,backgroundColor:vr.map(v=>v===null?"transparent":v>=0?"rgba(79,142,247,0.75)":"rgba(242,92,84,0.75)"),borderRadius:4}];
+  if(kr) ds.push({label:"KOSPI",data:kr,backgroundColor:"rgba(122,128,153,0.4)",borderRadius:4});
+  new Chart(document.getElementById("barChart"),{type:"bar",data:{labels:dates,datasets:ds},options:{responsive:true,plugins:{legend:{position:"bottom",labels:{usePointStyle:true,padding:12}}},scales:{x:{grid:{color:G},ticks:{maxTicksLimit:8}},y:{grid:{color:G},ticks:{callback:v=>v+"%"}}}}});
+}
+
+function drawArea(dates, vips, origins) {
+  const profits=vips.map((v,i)=>v-origins[i]);
+  new Chart(document.getElementById("areaChart"),{type:"line",data:{labels:dates,datasets:[{label:"누적 수익금",data:profits,borderColor:"#3dd68c",backgroundColor:"rgba(61,214,140,0.12)",borderWidth:2.5,fill:true,tension:0.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:G},ticks:{maxTicksLimit:6}},y:{grid:{color:G},ticks:{callback:v=>(v>=0?"+":"")+Math.round(v/10000)+"만"}}}}});
+}
+
+function drawMDD(dates, vips) {
+  const {mdd,troughIdx}=calcMDD(vips);
+  let peak=vips[0];
+  const dd=vips.map(v=>{if(v>peak)peak=v;return+((v-peak)/peak*100).toFixed(2);});
+  new Chart(document.getElementById("mddChart"),{type:"line",data:{labels:dates,datasets:[{label:"드로우다운(%)",data:dd,borderColor:"#f25c54",backgroundColor:"rgba(242,92,84,0.15)",borderWidth:2,fill:true,tension:0.3,pointRadius:dd.map((_,i)=>i===troughIdx?6:2),pointBackgroundColor:dd.map((_,i)=>i===troughIdx?"#f25c54":"transparent")}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>" "+ctx.parsed.y.toFixed(2)+"%"}}},scales:{x:{grid:{color:G},ticks:{maxTicksLimit:6}},y:{grid:{color:G},max:0,ticks:{callback:v=>v+"%"}}}}});
+  const pct=Math.min(mdd,30);
+  document.getElementById("mdd-bar").style.width=(pct/30*100)+"%";
+  document.getElementById("mdd-pct-label").textContent="-"+mdd+"%";
+}
+
+function renderSharpe(vips) {
+  const s=calcSharpe(vips);
+  const circ=document.getElementById("sharpe-circle");
+  const desc=document.getElementById("sharpe-desc");
+  if(s===null){circ.textContent="N/A";return;}
+  circ.textContent=s.toFixed(2);
+  let cls,comment;
+  if(s>=1.0){cls="good";comment="<strong>우수 🏆 ("+s.toFixed(2)+")</strong><br>위험 대비 수익이 우수합니다.<br>효율적인 운용 중이에요.";}
+  else if(s>=0){cls="ok";comment="<strong>보통 📊 ("+s.toFixed(2)+")</strong><br>위험 대비 수익이 보통 수준입니다.<br>수익성 개선 여지가 있어요.";}
+  else{cls="poor";comment="<strong>주의 ⚠️ ("+s.toFixed(2)+")</strong><br>무위험 자산 대비 초과 수익 부족.<br>포트폴리오 전략 점검이 필요해요.";}
+  circ.className="sharpe-circle "+cls;
+  desc.innerHTML=comment+'<br><span style="color:var(--muted);font-size:10px">무위험률 3.5% · 월별 수익률 기준 연환산</span>';
+
+  if(vips.length>=3){
+    const sh=[],sl=[];
+    for(let n=2;n<=vips.length;n++){sh.push(calcSharpe(vips.slice(0,n)));sl.push(n+"구간");}
+    new Chart(document.getElementById("sharpeChart"),{type:"line",data:{labels:sl,datasets:[{label:"Sharpe",data:sh,borderColor:"#a78bfa",backgroundColor:"rgba(167,139,250,0.1)",borderWidth:2,fill:true,tension:0.3,pointRadius:3}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>" Sharpe: "+(ctx.parsed.y?.toFixed(2)||"N/A")}}},scales:{x:{grid:{color:G},ticks:{maxTicksLimit:6}},y:{grid:{color:G},ticks:{callback:v=>v.toFixed(1)}}}}});
   }
-  new Chart(document.getElementById("lineChart"), {
-    type: "line",
-    data: { labels: dates, datasets },
-    options: {
-      responsive: true,
-      interaction: { mode: "index", intersect: false },
-      plugins: {
-        legend: { position: "bottom", labels: { usePointStyle: true, padding: 16 } },
-        tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}` } }
-      },
-      scales: {
-        x: { grid: { color: gridColor }, ticks: { maxTicksLimit: 6 } },
-        y: {
-          grid: { color: gridColor },
-          ticks: { callback: v => v.toFixed(0) }
-        }
-      }
-    }
-  });
-}
-
-function drawPie(holdings) {
-  const labels = Object.keys(holdings);
-  const values = Object.values(holdings);
-  const colors = ["#4f8ef7","#3dd68c","#f4c542","#f25c54","#a78bfa","#7a8099"];
-  new Chart(document.getElementById("pieChart"), {
-    type: "doughnut",
-    data: {
-      labels,
-      datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: "#181c27", hoverOffset: 8 }]
-    },
-    options: {
-      responsive: true,
-      cutout: "55%",
-      plugins: {
-        legend: { position: "bottom", labels: { usePointStyle: true, padding: 10, font: { size: 10 } } },
-        tooltip: {
-          callbacks: {
-            label: ctx => {
-              const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
-              const pct = (ctx.parsed / total * 100).toFixed(1);
-              return ` ${ctx.label}: ${pct}%`;
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-function drawBar(dates, vipsVals, kospiIdx) {
-  const vipsRets  = calcMonthlyRet(vipsVals);
-  const kospiRets = kospiIdx ? calcMonthlyRet(kospiIdx) : null;
-  const datasets = [
-    {
-      label: "VIPS",
-      data: vipsRets,
-      backgroundColor: vipsRets.map(v => v === null ? "transparent" : v >= 0 ? "rgba(79,142,247,0.7)" : "rgba(242,92,84,0.7)"),
-      borderRadius: 4
-    }
-  ];
-  if (kospiRets) {
-    datasets.push({
-      label: "KOSPI",
-      data: kospiRets,
-      backgroundColor: "rgba(122,128,153,0.4)",
-      borderRadius: 4
-    });
-  }
-  new Chart(document.getElementById("barChart"), {
-    type: "bar",
-    data: { labels: dates, datasets },
-    options: {
-      responsive: true,
-      plugins: { legend: { position: "bottom", labels: { usePointStyle: true, padding: 14 } } },
-      scales: {
-        x: { grid: { color: gridColor }, ticks: { maxTicksLimit: 8 } },
-        y: { grid: { color: gridColor }, ticks: { callback: v => v + "%" } }
-      }
-    }
-  });
-}
-
-function drawArea(dates, vipsVals, origins) {
-  const profits = vipsVals.map((v,i) => v - origins[i]);
-  new Chart(document.getElementById("areaChart"), {
-    type: "line",
-    data: {
-      labels: dates,
-      datasets: [{
-        label: "누적 수익금",
-        data: profits,
-        borderColor: "#3dd68c",
-        backgroundColor: "rgba(61,214,140,0.12)",
-        borderWidth: 2.5,
-        fill: true,
-        tension: 0.4,
-        pointRadius: 3
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: gridColor }, ticks: { maxTicksLimit: 6 } },
-        y: {
-          grid: { color: gridColor },
-          ticks: { callback: v => (v >= 0 ? "+" : "") + Math.round(v/10000) + "만" }
-        }
-      }
-    }
-  });
 }
 
 async function init() {
-  const csvRows = await loadData();
-  let data;
-
-  if (csvRows) {
-    data = parseCSV(csvRows);
-    document.getElementById("guide-banner").style.display = "none";
+  let dates,vips,origins,kospi,holdings;
+  const rows=await loadCSV();
+  if(rows&&rows.length>0){
+    ({dates,vips,origins,kospi,holdings}=extractData(rows));
   } else {
-    data = { ...SAMPLE };
+    dates=SD.dates;vips=SD.vips;origins=SD.origins;kospi=SD.kospi;holdings=SD.holdings;
   }
-
-  const { dates, vipsVals, origins, holdings } = data;
-  const vipsIdx = calcVipsIndex(vipsVals);
-
-  // kospiIdx는 parseCSV에서 이미 계산됨 (구글 시트 O열 KOSPI 종가 기반)
-  const kospiIdx = data.kospiIdx || null;
-
-  setKPI({ dates, vipsVals, origins, kospiIdx });
-  drawLine(dates, vipsIdx, kospiIdx);
+  const vipsIdx=toIdx(vips);
+  const kospiIdx=kospi&&kospi.some(v=>v)?toIdx(kospi):null;
+  renderKPI(dates,vips,origins,vipsIdx,kospiIdx);
+  drawLine(dates,vipsIdx,kospiIdx);
   drawPie(holdings);
-  drawBar(dates, vipsVals, kospiIdx);
-  drawArea(dates, vipsVals, origins);
+  drawBar(dates,vips,kospi&&kospi.some(v=>v)?kospi:null);
+  drawArea(dates,vips,origins);
+  drawMDD(dates,vips);
+  renderSharpe(vips);
 }
-
 init();
 </script>
 </body>
